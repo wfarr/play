@@ -6,13 +6,11 @@
 //= require helpers
 
 //= require realtime
+//= require router
 //= require behaviors
 //= require upload
 
 play = exports ? this
 
-# Automatically pull in Now Playing.
-play.requestAndRenderNowPlaying()
-
-# Automatically pull in your Queue.
-play.renderQueue()
+# Route the app
+new play.Router(window.location.pathname).navigate()

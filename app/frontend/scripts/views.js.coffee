@@ -29,13 +29,14 @@ class window.Song
   #
   # Uses hawt data-artist fields to populate the artist.
   artist_tag: () ->
-    "<a href=\"#\" data-artist=\"#{@artist}\" class=\"artist\">#{@artist}</a>"
+    "<a href=\"/artist/#{@artist}\" data-artist=\"#{@artist}\" class=\"artist\">#{@artist}</a>"
 
   # Link to the Album page.
   #
   # Uses hawt data-artist and data-album fields to populate the artist.
   album_tag: () ->
-    "<a href=\"#\" data-artist=\"#{@artist}\" data-album=\"#{@album}\" class=\"album\">#{@album}</a>"
+    "<a href=\"/artist/#{@artist}/album/#{@album}\" data-artist=\"#{@artist}\"
+        data-album=\"#{@album}\" class=\"album\">#{@album}</a>"
 
 
 # A listing of Songs.

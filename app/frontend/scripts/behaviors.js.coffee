@@ -4,6 +4,13 @@
 play = exports ? this
 
 $(document).ready () ->
+  # Attach a click handler to every link so we can pushState it.
+  $('a').click (e) ->
+    history.pushState(null, null, e.target.pathname)
+
+  # ...and add a listener so we can decode the URL and run an action.
+  window.addEventListener "popstate", (e) ->
+    new Router(location.pathname).navigate()
 
   # Refreshes the Queue.
   $('.queue').click () ->

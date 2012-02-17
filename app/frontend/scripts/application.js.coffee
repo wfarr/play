@@ -13,4 +13,4 @@
 play = exports ? this
 
 # Route the app
-new play.Router(window.location.pathname).navigate()
+new play.Router(window.location.pathname).go()

@@ -10,7 +10,7 @@ $(document).ready () ->
 
   # ...and add a listener so we can decode the URL and run an action.
   window.addEventListener "popstate", (e) ->
-    new Router(location.pathname).navigate()
+    new Router(location.pathname).go()
 
   # Refreshes the Queue.
   $('.queue').click () ->
@@ -82,7 +82,7 @@ $(document).ready () ->
   # Assumes the anchor text is `@login`, which then gets its `@` stripped.
   $('.user-logged-in a').click () ->
     user = @text.substr(1)
-    updateSongs("/user/#{user}","GET")
+    new Router("/user/#{user}").go()
     false
 
   # Stars this song.

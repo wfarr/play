@@ -72,7 +72,7 @@ module Play
       @current_user
     end
 
-    get "/" do
+    get "*" do
       content_type :html
       mustache :index
     end

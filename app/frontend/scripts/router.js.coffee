@@ -10,13 +10,21 @@ class play.Router
   # A Hash of all of the interactions in Play.
   routes:
     '/': 'index'
-    ''
 
   # Route the app.
-  navigate: () =>
-    @[@routes[@path]]()
+  go: () =>
+    route = @routes[@path]
+
+    if route
+      @[route]()
+    else
+      @user()
 
   # The home page.
   index: () ->
     play.requestAndRenderNowPlaying()
     play.renderQueue()
+
+  # The user page.
+  user: () ->
+    play.updateSongs(@path,"GET")

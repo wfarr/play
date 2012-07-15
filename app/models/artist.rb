@@ -18,7 +18,9 @@ module Play
     # Returns an Array of Songs.
     def songs
       if name
-        Player.app.tracks[Appscript.its.artist.contains(name)].get.map do |record|
+        library.shared_tracks.select do |t|
+          artists =~ /#{name}/
+        end.map do | record |
           Song.initialize_from_record(record)
         end
       else

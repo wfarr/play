@@ -25,7 +25,7 @@ module Play
     # Returns an Appscript instance of the airfoil app.
     def self.app
       return false if ENV['RACK_ENV'] == 'test'
-      Appscript.app('Airfoil')
+      OSA.app('Airfoil')
     end
 
     # Check if Airfoil is installed.
@@ -42,16 +42,16 @@ module Play
     #
     # Returns Array of Speakers.
     def self.get_speakers
-      app.speakers.id_.get.map { |id|
-        Speaker.new id
-      }
+      #app.speakers.id_.get.map { |id|
+      #  Speaker.new id
+      #}
     end
 
     # Get the current Airfoil audio source name.
     #
     # Returns String Airfoil audio source name.
     def self.audio_source
-      app.current_audio_source.name.get
+      #app.current_audio_source.name.get
     end
 
     # Set audio source for Airfoil.
@@ -60,20 +60,20 @@ module Play
     #
     # Returns String audio source name.
     def self.audio_source=(setting)
-      app.application_sources.id_.get.each do |id|
-        name = app.application_sources.ID(id).name.get
-        if name.eql?(setting)
-          app.current_audio_source.set(app.application_sources.get[id])
-        end
-      end
-      audio_source
+      #app.application_sources.id_.get.each do |id|
+      #  name = app.application_sources.ID(id).name.get
+      #  if name.eql?(setting)
+      #    app.current_audio_source.set(app.application_sources.get[id])
+      #  end
+      #end
+      #audio_source
     end
 
     # Get volume for all speakers.
     #
     # Returns Array of Floats speaker volumefrom 0.0 to 1.0.
     def self.speakers_volume
-      app.speakers.volume.get
+      #app.speakers.volume.get
     end
 
     # Set the volume for all speakers.
@@ -82,8 +82,8 @@ module Play
     #
     # Returns Float volume level.
     def self.speakers_volume=(setting)
-      app.speakers.volume.set setting
-      speakers_volume
+      #app.speakers.volume.set setting
+      #speakers_volume
     end
 
   end

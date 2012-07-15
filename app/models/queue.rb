@@ -15,7 +15,9 @@ module Play
     #
     # Returns an Appscript::Reference to the Playlist.
     def self.playlist
-      Player.app.playlists[name].get
+      Play::Player.app.sources.first.playlists.select do |p|
+        p.name == 'iTunes DJ'
+      end.first
     end
 
     # Get the queue start offset for the iTunes DJ playlist.
@@ -33,7 +35,7 @@ module Play
     #
     # Returns Integer offset to queued songs.
     def self.playlist_offset
-      Player.app.current_track.index.get
+      Play::Player.app.current_track.index
     end
 
     # Public: Adds a song to the Queue.
@@ -42,7 +44,7 @@ module Play
     #
     # Returns a Boolean of whether the song was added.
     def self.add_song(song)
-      Player.app.add(song.record.location.get, :to => playlist.get)
+      Play::Player.app.duplicate(song.record, :to => self.playlist)
     end
 
     # Public: Removes a song from the Queue.
@@ -51,16 +53,16 @@ module Play
     #
     # Returns a Boolean of whether the song was removed maybe.
     def self.remove_song(song)
-      Play::Queue.playlist.tracks[
-        Appscript.its.persistent_ID.eq(song.id)
-      ].first.delete
+      self.playlist.tracks.select do |t|
+        t.persistent_id == song.id
+      end.first.delete
     end
 
     # Clear the queue. Shit's pretty destructive.
     #
     # Returns who the fuck knows.
     def self.clear
-      Play::Queue.playlist.tracks.get.each { |record| record.delete }
+      self.playlist.tracks.each { |record| record.delete }
     end
 
     # Ensure that we're currently playing on the Play playlist. Don't let anyone
@@ -68,8 +70,8 @@ module Play
     #
     # Returns nil.
     def self.ensure_playlist
-      if Play::Player.app.current_playlist.get.name.get != name
-        Play::Player.app.playlists[name].get.play
+      if Play::Player.app.current_playlist.name != name
+        self.playlist.play
       end
     rescue Exception => e
       # just in case!
@@ -79,8 +81,8 @@ module Play
     #
     # Returns an Array of Songs.
     def self.songs
-      songs = playlist.tracks.get.map do |record|
-        Song.find(record.persistent_ID.get)
+      songs = playlist.tracks.map do |record|
+        Song.find(record.persistent_id)
       end
       songs.slice(playlist_offset, songs.length - playlist_offset)
     rescue Exception => e
@@ -92,9 +94,9 @@ module Play
     #
     # Returns a Boolean.
     def self.queued?(song)
-      Play::Queue.playlist.tracks[
-        Appscript.its.persistent_ID.eq(song.id)
-      ].get.size != 0
+      self.playlist.tracks.select do |t|
+        t.persistent_id == song.id
+      end.size > 0
     end
 
     # Returns the context of this Queue as JSON. This contains all of the songs

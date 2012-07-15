@@ -59,11 +59,11 @@ module Play
     #
     # Returns a new Song instance.
     def self.initialize_from_record(record)
-      new :id     => record.persistent_ID.get,
-          :name   => record.name.get,
-          :artist => record.artist.get,
-          :album  => record.album.get,
-          :duration => record.duration.get
+      new :id     => record.persistent_id,
+          :name   => record.name,
+          :artist => record.artist,
+          :album  => record.album,
+          :duration => record.duration
     end
 
     # Finds a song in the database.
@@ -72,7 +72,7 @@ module Play
     #
     # Returns an instance of a Song.
     def self.find(id)
-      record = Player.library.tracks[Appscript.its.persistent_ID.eq(id)].get[0]
+      record = Player.library.tracks.select { |t| t.persistent_id == id }.first
 
       return nil if record.nil?
 
@@ -84,13 +84,15 @@ module Play
     #
     # Returns a Song.
     def self.find_by_name(name)
-      top = Player.library.tracks[Appscript.its.name.eq(name)].get.sort do |a,b|
-        History.count_by_song(Song.new(:id => b.persistent_ID.get)) <=>
-          History.count_by_song(Song.new(:id => a.persistent_ID.get))
+      top = Player.library.tracks.select { |t|
+        t.name == name
+      }.first.sort do |a,b|
+        History.count_by_song(Song.new(:id => b.persistent_id)) <=>
+          History.count_by_song(Song.new(:id => a.persistent_id))
       end[0]
 
       if top
-        find(top.get.persistent_ID.get)
+        find(top.persistent_id)
       end
     end
 
@@ -103,7 +105,7 @@ module Play
     # Song name match and return that record.
     def record
       if id
-        Player.library.tracks[Appscript.its.persistent_ID.eq(id)].get[0]
+        Player.library.tracks.select { |t| t.persistent_id == id }.first
       else
         song = Artist.new(artist).songs.select{|song| song.name =~ /^#{Regexp.escape(name)}$/i}.first
         song.record if song
@@ -115,7 +117,7 @@ module Play
     # Returns a String of the binary image or some shit. If there's no art
     # available, returns nil.
     def album_art_data
-      record.artworks.get.empty? ? nil : record.artworks[1].raw_data.get.data
+      record.artworks.get.empty? ? nil : record.artworks.first.raw_data.__data__
     end
 
     # The playcount for this song.

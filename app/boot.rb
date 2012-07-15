@@ -11,7 +11,7 @@ require 'mustache/sinatra'
 require 'sinatra_auth_github'
 require 'yajl'
 require 'sass'
-require 'appscript' if RUBY_PLATFORM.downcase.include?("darwin") && !ENV['CI']
+require 'rbosa' if RUBY_PLATFORM.downcase.include?("darwin") && !ENV['CI']
 require 'pusher'
 
 require 'play'
@@ -30,5 +30,5 @@ require 'models/airfoil'
 require 'app'
 require 'views/layout'
 
-REDIS_URL = 'redis://127.0.0.1'
+REDIS_URL = "redis://127.0.0.1:#{ENV['GH_REDIS_PORT']}"
 $redis = Redis.connect(:url => REDIS_URL, :thread_safe => true)

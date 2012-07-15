@@ -5,12 +5,14 @@ module Play
     #
     # Returns an Appscript instance of the music app.
     def self.app
-      Appscript.app('iTunes')
+      ::OSA.app('iTunes')
     end
 
     # All songs in the library.
     def self.library
-      app.playlists['Library'].get
+      app.sources.select { |s|
+        s.name == 'Library'
+      }.first.library_playlists.get.first
     end
 
     # Play the music.
@@ -25,7 +27,7 @@ module Play
 
     # Is there music currently playing?
     def self.paused?
-      state = app.player_state.get
+      state = app.player_state.name
       state == :paused
     end
 
@@ -69,7 +71,7 @@ module Play
     #
     # Returns an Integer from 0-100.
     def self.app_volume
-      app.sound_volume.get
+      app.sound_volume
     end
 
     # Set the app volume.
@@ -79,7 +81,7 @@ module Play
     #
     # Returns the current volume setting.
     def self.app_volume=(setting)
-      app.sound_volume.set(setting)
+      app.sound_volume = setting
       setting
     end
 
@@ -98,8 +100,8 @@ module Play
     #
     # Returns a Song.
     def self.now_playing
-      Song.new(app.current_track.persistent_ID.get)
-    rescue Appscript::CommandError
+      Song.new(app.current_track.persistent_id)
+    rescue
       nil
     end
 
@@ -114,21 +116,8 @@ module Play
     #
     # Returns an Array of matching Songs.
     def self.search(keyword)
-      # Exact Artist match.
-      songs = library.tracks[Appscript.its.artist.eq(keyword)].get
-      return songs.map{|record| Song.new(record.persistent_ID.get)} if songs.size != 0
-
-      # Exact Album match.
-      songs = library.tracks[Appscript.its.album.eq(keyword)].get
-      return songs.map{|record| Song.new(record.persistent_ID.get)} if songs.size != 0
-
-      # Exact Song match.
-      songs = library.tracks[Appscript.its.name.eq(keyword)].get
-      return songs.map{|record| Song.new(record.persistent_ID.get)} if songs.size != 0
-
-      # Fuzzy Song match.
-      songs = library.tracks[Appscript.its.name.contains(keyword)].get
-      songs.map{|record| Song.new(record.persistent_ID.get)}
+      songs = library.search(keyword)
+      return songs.map{|record| Song.new(record.persistent_id)} if songs.size != 0
     end
 
   end

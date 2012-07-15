@@ -15,7 +15,7 @@ gem 'foreman'
 gem 'thin'
 
 if RUBY_PLATFORM.downcase.include?("darwin")
-  gem 'rb-appscript'
+  gem 'rubyosa19', :git => 'git://github.com/pbosetti/rubyosa.git'
 end
 
 group :test do

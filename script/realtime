@@ -6,7 +6,7 @@
 
 $PROGRAM_NAME = 'play [realtime-daemon]'
 
-require_relative '../app/boot'
+require 'app/boot'
 
 class Realtime
   def initialize

@@ -1,2 +1,2 @@
-web:      bundle exec thin start -p 5051
+web:      bundle exec unicorn -c config/unicorn.rb -p 5051
 realtime: script/realtime

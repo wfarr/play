@@ -12,7 +12,7 @@ gem 'sass',          '~>3.1'
 gem 'coffee-script'
 gem 'pusher'
 gem 'foreman'
-gem 'thin'
+gem 'unicorn'
 
 if RUBY_PLATFORM.downcase.include?("darwin")
   gem 'rubyosa19', :git => 'git://github.com/pbosetti/rubyosa.git'
